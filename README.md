@@ -27,6 +27,8 @@
 #### 13. HTML 실습 &nbsp;<small>[바로가기](https://opentutorials.org/course/1688/9345)</small>
 
 #### 14. 개발도구 &nbsp;<small>[바로가기](https://opentutorials.org/course/1688/9346)</small>
+ * 아톰 사이트 바로가기 : https://atom.io
+ * 아톰에 대한 상세한 사용법 강좌 바로가기: https://opentutorials.org/module/1579
 
 #### 15. CSS 이론 &nbsp;<small>[바로가기](https://opentutorials.org/course/1688/9350)</small>
 
