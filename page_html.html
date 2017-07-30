@@ -17,11 +17,24 @@
         </ol>
     </nav>
     <div id="control">
-        <input type="button" value="white" onclick="document.getElementById('target').className='white'"/>
-        <input type="button" value="black" onclick="document.getElementById('target').className='black'"/>
+        <input type="button" value="white" id="white_btn"/>
+        <input type="button" value="black" id="black_btn"/>
     </div>
     <article>
         <h2>JavaScript란?</h2> JavaScript는 웹페이지를 프로그래밍적으로 제어하는 언어입니다.
     </article>
+    <script>
+        target = document.getElementById('target');
+
+        wbtn = document.getElementById('white_btn');
+        wbtn.addEventListener('click', function(){
+            target.className = 'white';
+        });
+
+        bbtn = document.getElementById('black_btn');
+        bbtn.addEventListener('click', function(){
+            target.className = 'black';
+        });
+    </script>
 </body>
 </html>
