@@ -9,7 +9,7 @@ $result = mysqli_query($conn, 'SELECT * FROM `topic`');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>MySQL 실습</title>
+    <title>MySQL 실습:글작성</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body id="target">
@@ -29,18 +29,25 @@ $result = mysqli_query($conn, 'SELECT * FROM `topic`');
     <div id="control">
         <input type="button" value="white" onclick="document.getElementById('target').className='white'"/>
         <input type="button" value="black" onclick="document.getElementById('target').className='black'"/>
-        <a href="/write.php">쓰기</a>
     </div>
     <article>
-    <?php
-    if(empty($_GET['id']) === false) {
-        $sql = 'SELECT * FROM `topic` WHERE id='.$_GET['id'];
-        $result = mysqli_query($conn, $sql);
-        $row = mysqli_fetch_assoc($result);
-        echo '<h2>'.$row['title'].'</h2>'."\n";
-        echo $row['description'];
-    }
-    ?>
+        <form class="form" action="process.php" method="post">
+            <p>
+                <label for="inputTitle">제목 : </label>
+                <input type="text" name="title" id="inputTitle" placeholder="제목을 입력">
+            </p>
+            <p>
+                <label for="inputAuthor">작성자 : </label>
+                <input type="text" name="author" id="inputAuthor" placeholder="작성자 입력">
+            </p>
+            <p>
+                <label for="inputDesc">본문 : </label>
+                <textarea name="description" id="inputDesc" rows="8" cols="80"></textarea>
+            </p>
+            <p>
+                <input type="submit" name="submit" value="전송" />
+            </p>
+        </form>
     </article>
 </body>
 </html>

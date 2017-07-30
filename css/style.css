@@ -13,6 +13,12 @@ header {
     padding: 20px;
 }
 
+header img {
+    float: right;
+    margin-right: 10px;
+    width: 80px;
+}
+
 nav {
     border-right: 1px solid gray;
     width: 200px;
@@ -21,12 +27,14 @@ nav {
 }
 
 nav ol {
+    padding: 10px;
     list-style: none;
 }
 
 article {
     float: left;
     padding: 20px;
+    width: 500px;
 }
 
 h2 {
