@@ -53,7 +53,7 @@ $result = mysqli_query($conn, 'SELECT * FROM `topic`');
     <script>
       UPLOADCARE_LOCALE = "ko";
       UPLOADCARE_TABS = "file url facebook gdrive gphotos dropbox instagram evernote flickr skydrive";
-      UPLOADCARE_PUBLIC_KEY = "f419813b8d893d328c32";
+      UPLOADCARE_PUBLIC_KEY = "PUBLIC_KEY 입력";
     </script>
     <script charset="utf-8" src="//ucarecdn.com/libs/widget/3.1.1/uploadcare.full.min.js"></script>
     <script type="text/javascript">
