@@ -1,6 +1,7 @@
 <?php
-$conn = mysqli_connect( 'localhost', 'ciuser', 'cipass');
-mysqli_select_db($conn, 'opentutorials');
+require('config/config.php');
+require('lib/db.php');
+$conn = db_init($config['host'], $config['dbuser'], $config['dbpass'],
 $result = mysqli_query($conn, 'SELECT * FROM `topic`');
 ?>
 <!DOCTYPE html>
