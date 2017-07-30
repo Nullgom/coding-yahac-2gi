@@ -17,5 +17,6 @@ $sql = "INSERT INTO topic (title, description, author, created_at) VALUES('"
      . $_POST['title'] . "','" . $_POST['description']. "'," .$user_id. ", now())";
 // echo $sql;
 $result = mysqli_query($conn, $sql);
-header('Location: http://'.$_SERVER['HTTP_HOST'].'/index.php');
+$insert_id = mysqli_insert_id($conn);
+header('Location: http://'.$_SERVER['HTTP_HOST'].'/index.php?id='.$insert_id);
 ?>

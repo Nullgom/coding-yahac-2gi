@@ -40,6 +40,36 @@ article {
 h2 {
     font-size: 50px;
 }
+.form label {
+    display: inline-block;
+    width: 70px;
+    font-weight: 600;
+}
+.form input[type="text"], .form textarea {
+    padding: 5px 4px;
+    border-radius: 4px;
+    border: 1px solid darkslategray;
+    min-width: 350px
+}
+.form textarea {
+    margin-top: 8px;
+    width: 500px;
+}
+.btn {
+    background: teal;
+    color: white;
+    display: inline-block;
+    margin: 0;
+    padding: .4em 1em;
+    box-shadow: none;
+    border: none;
+    border-radius: 6px;
+    font:inherit;
+    line-height: inherit;
+    text-align: center;
+    cursor: default;
+}
+
 #control {
     float:right;
 }
