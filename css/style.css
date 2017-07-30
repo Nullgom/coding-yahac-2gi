@@ -1,5 +1,4 @@
 @charset "UTF-8";
-
 body.black {
     background-color: black;
     color: white;
@@ -8,38 +7,15 @@ body.white {
     background-color: white;
     color: black;
 }
-header {
-    border-bottom: 1px solid gray;
-    padding: 20px;
+
+#logo {
+    width: 100px;
 }
 
-header img {
-    float: right;
-    margin-right: 10px;
-    width: 80px;
+.container {
+    padding-top: 20px;
 }
 
-nav {
-    border-right: 1px solid gray;
-    width: 200px;
-    height: 600px;
-    float: left;
-}
-
-nav ol {
-    padding: 10px;
-    list-style: none;
-}
-
-article {
-    float: left;
-    padding: 20px;
-    width: 500px;
-}
-
-h2 {
-    font-size: 50px;
-}
 #control {
-    float:right;
+    margin-bottom: 40px;
 }
