@@ -2,7 +2,11 @@
 require('config/config.php');
 require('lib/db.php');
 $conn = db_init($config['host'], $config['dbuser'], $config['dbpass'], $config['dbname']);
-$result = mysqli_query($conn, 'SELECT * FROM `topic`');
+$id = intval($_GET['id']);
+// 먼저 쓴 글의 정보를 가져온다.
+$sql = "SELECT * FROM board WHERE id=$id";
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -10,12 +14,12 @@ $result = mysqli_query($conn, 'SELECT * FROM `topic`');
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap3 적용</title>
+    <title>게시판 목록 보기</title>
     <link href="https://bootswatch.com/paper/bootstrap.min.css" rel="stylesheet" />
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/board.css" rel="stylesheet">
 </head>
 <body id="target">
-    <header class="navbar navbar-inverse navbar-fixed-top">
+    <header class="navbar navbar-inverse navbar-static-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2" aria-expanded="false">
@@ -31,8 +35,8 @@ $result = mysqli_query($conn, 'SELECT * FROM `topic`');
 
             <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-2" aria-expanded="false" style="height: 1px;">
               <ul class="nav navbar-nav">
-                <li><a href="#">게시판</a></li>
-                <li class="active"><a href="#">토픽</a><span class="sr-only">(current)</span></li>
+                <li class="active"><a href="/board_list">게시판 <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">토픽</a></li>
                 <li><a href="#">방명록</a></li>
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-cog"></i>&nbsp;관리자<span class="caret"></span></a>
@@ -65,52 +69,53 @@ $result = mysqli_query($conn, 'SELECT * FROM `topic`');
           </div>
     </header>
     <div class="container">
-        <header class="jumbotron text-center">
-             <img src="https://s3.ap-northeast-2.amazonaws.com/opentutorials-user-file/course/94.png" alt="생활코딩" class="img-circle" id="logo"/>
-            <h1><a href="/index.php">JavaScript</a></h1>
-        </header>
-
-        <div class="row">
-            <nav class="col-md-3">
-                <ol class="nav nav-pills nav-stacked">
-            <?php
-                while($row = mysqli_fetch_assoc($result)) {
-                    if(isset($_GET['id']) && $_GET['id'] == $row['id']) {
-                        echo '<li class="active"><a href="/index.php?id='.$row['id'].'">'.htmlspecialchars($row['title']).'</a></li>'."\n";
-                    }
-                    else {
-                        echo '<li><a href="/index.php?id='.$row['id'].'">'.htmlspecialchars($row['title']).'</a></li>'."\n";
-                    }
-                }
-            ?>
-                </ol>
-            </nav>
-            <div class="col-md-9">
-                <article>
-                    <?php
-                    if(empty($_GET['id']) === false) {
-                        $sql = "SELECT topic.id, title, user.name as author, description "
-                        . "FROM topic LEFT Join user ON topic.author = user.id "
-                        . "WHERE topic.id =".$_GET['id'];
-                        $result = mysqli_query($conn, $sql);
-                        $row = mysqli_fetch_assoc($result);
-                        echo '<h2>'.htmlspecialchars($row['title']).'</h2>'."\n";
-                        echo '<p>'.htmlspecialchars($row['author']).'</p>'."\n";
-                        echo strip_tags($row['description'], '<a><h1><h2><h3><h4><h5><ul><ol><li><p><div><img>');
-                    }
-                    ?>
-                </article>
-                <hr />
-                <div id="control" class="text-right">
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <input type="button" value="White" onclick="document.getElementById('target').className='white'" class="btn btn-default btn-lg"/>
-                        <input type="button" value="Black" onclick="document.getElementById('target').className='black'" class="btn btn-default btn-lg"/>
-                    </div>
-                    &nbsp;
-                    <a href="/write.php" class="btn btn-success btn-lg">
-                        <i class="glyphicon glyphicon-pencil"></i>&nbsp; 쓰기</a>
-                </div>
+        <h1>게시판 <small>글 수정하기</small></h1>
+        <hr>
+        <div class="well col-md-10 col-md-offset-1">
+        <form class="form-horizontal" action="board_process.php?cmd=update" method="post">
+            <input type="hidden" name="id" value="<?=$id?>">
+            <div class="form-group">
+              <label for="inputName" class="col-lg-2 control-label">이름 :</label>
+              <div class="col-lg-10">
+                <input type="text" class="form-control" name="name" id="inputName" value="<?=$row['name']?>" placeholder="작성자 이름 입력">
+              </div>
             </div>
+            <div class="form-group">
+              <label for="inputEmail" class="col-lg-2 control-label">이메일 :</label>
+              <div class="col-lg-10">
+                <input type="email" class="form-control" name="email" id="inputEmail" value="<?=$row['email']?>" placeholder="Email 입력">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputPassword" class="col-lg-2 control-label">비밀번호 :</label>
+              <div class="col-lg-10">
+                <input type="password" class="form-control" name="password" id="inputPassword" placeholder="비밀번호 입력(비밀번호가 맞아야 수정가능)" required/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="inputTitle" class="col-lg-2 control-label">제목 :</label>
+              <div class="col-lg-10">
+                <input type="text" class="form-control" name="title" id="inputTitle" value="<?=$row['title']?>" placeholder="글 제목을 입력" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="textArea" class="col-lg-2 control-label">본문 :</label>
+              <div class="col-lg-10">
+                <textarea class="form-control" rows="10" name="content" id="textArea" required placeholder="글 내용을 입력..."><?=$row['content']?></textarea>
+                <!-- <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span> -->
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-lg-10 col-lg-offset-2 text-right">
+                <button type="submit" class="btn btn-success">글 저장하기&nbsp;
+                  <span class="glyphicon glyphicon-send"></span></button>
+                &nbsp;&nbsp;&nbsp;
+                <button type="reset" class="btn btn-default">다시 쓰기</button>
+                &nbsp;&nbsp;&nbsp;
+                <button class="btn btn-warning" onclick="history.back(-1)">되돌아가기</button>
+              </div>
+            </div>
+        </form>
         </div>
     </div>
     <footer class="footer">

@@ -8,4 +8,8 @@ function db_init($host, $dbuser, $dbpass, $dbname) {
 function escape_string($conn, $str) {
     return mysqli_real_escape_string($conn, $str);
 }
+
+function sanitize($data) {
+    return addslashes(htmlspecialchars(strip_tags(trim($data))));
+}
 ?>

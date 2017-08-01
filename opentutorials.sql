@@ -55,4 +55,21 @@ CREATE TABLE `guestbook` (
     `content` TEXT NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB COLLATE='utf8_general_ci'
+) ENGINE=InnoDB CHARSET=utf8 COLLATE='utf8_general_ci';
+
+-- ----------------------------
+-- Table structure for `board`
+-- ----------------------------
+DROP TABLE IF EXISTS `board`;
+CREATE TABLE `board` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(20) NOT NULL,
+    `email` VARCHAR(50) NULL DEFAULT NULL,
+    `password` VARCHAR(20) NOT NULL,
+    `title` VARCHAR(120) NOT NULL,
+    `content` TEXT NOT NULL,
+    `created_at` DATETIME NOT NULL,
+    `ip` VARCHAR(15) NOT NULL,
+    `hits` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARSET=utf8 COLLATE='utf8_general_ci';
