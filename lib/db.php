@@ -4,4 +4,8 @@ function db_init($host, $dbuser, $dbpass, $dbname) {
     mysqli_select_db($conn, $dbname);
     return $conn;
 }
+
+function escape_string($conn, $str) {
+    return mysqli_real_escape_string($conn, $str);
+}
 ?>

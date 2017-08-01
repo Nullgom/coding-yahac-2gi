@@ -9,7 +9,7 @@ CREATE TABLE `topic` (
   `title` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `author` int(11) NOT NULL,
-  `created` datetime NOT NULL,
+  `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
@@ -43,3 +43,16 @@ INSERT INTO `user` VALUES ('3', 'k8805', '333333');
 INSERT INTO `user` VALUES ('4', 'sorialgi', '444444');
 INSERT INTO `user` VALUES ('5', 'lily', '555555');
 INSERT INTO `user` VALUES ('6', 'happydeveloper', '666666');
+
+-- ----------------------------
+-- Table structure for `guestbook`
+-- ----------------------------
+DROP TABLE IF EXISTS `guestbook`;
+CREATE TABLE `guestbook` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `author` VARCHAR(20) NOT NULL,
+    `password` VARCHAR(20) NOT NULL,
+    `content` TEXT NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB COLLATE='utf8_general_ci'

@@ -26,7 +26,7 @@ $result = mysqli_query($conn, 'SELECT * FROM `topic`');
                 <ol class="nav nav-pills nav-stacked">
             <?php
                 while($row = mysqli_fetch_assoc($result)) {
-                    if($_GET['id'] && $_GET['id'] == $row['id']) {
+                    if(isset($_GET['id']) && $_GET['id'] == $row['id']) {
                         echo '<li class="active"><a href="/index.php?id='.$row['id'].'">'.htmlspecialchars($row['title']).'</a></li>'."\n";
                     }
                     else {
