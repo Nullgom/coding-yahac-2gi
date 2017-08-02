@@ -7,6 +7,12 @@ if(!empty($_GET['cmd'])) {
     $cmd = strtolower($_GET['cmd']);
     switch ($cmd) {
         case 'insert': // 저장하기
+            // 입력값 검증
+            if(empty($_POST['name'])) ErrorMessage('이름을 입력하세요.');
+            if(empty($_POST['password'])) ErrorMessage('비밀번호를 입력하세요.');
+            if(empty($_POST['title'])) ErrorMessage('제목을 입력하세요.');
+            if(empty($_POST['content'])) ErrorMessage('내용을 입력하세요.');
+
             $name = $email = $password = $title = $content  = '';
             $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -41,6 +47,12 @@ if(!empty($_GET['cmd'])) {
                 alert_to_location("잘못된 접근입니다.","/board_list.php");
                 break;
             }
+            // 입력값 검증
+            if(empty($_POST['name'])) ErrorMessage('이름을 입력하세요.');
+            if(empty($_POST['password'])) ErrorMessage('비밀번호를 입력하세요.');
+            if(empty($_POST['title'])) ErrorMessage('제목을 입력하세요.');
+            if(empty($_POST['content'])) ErrorMessage('내용을 입력하세요.');
+
             $id = sanitize($_POST['id']);
             $password = sanitize($_POST['password']);
             $result = mysqli_query($conn, "SELECT password FROM $board WHERE id=$id");
@@ -83,6 +95,12 @@ if(!empty($_GET['cmd'])) {
             }
             break;
         case 'insert_reply' : // 답변글 저장
+            // 입력값 검증
+            if(empty($_POST['name'])) ErrorMessage('이름을 입력하세요.');
+            if(empty($_POST['password'])) ErrorMessage('비밀번호를 입력하세요.');
+            if(empty($_POST['title'])) ErrorMessage('제목을 입력하세요.');
+            if(empty($_POST['content'])) ErrorMessage('내용을 입력하세요.');
+
             $name = $email = $password = $title = $content  = '';
             $REMOTE_ADDR = $_SERVER['REMOTE_ADDR'];
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -117,12 +135,5 @@ if(!empty($_GET['cmd'])) {
 }
 else {
     alert_to_location('잘못된 접근입니다.', '/board_list.php');
-}
-
-function alert_to_location($message, $href) {
-    echo '<script type="text/javascript"> alert("'.$message.'"); location.href="'.$href.'"; </script>';
-}
-function alert_to_back($message) {
-    echo '<script type="text/javascript"> alert("'.$message.'"); history.back();</script>';
 }
 ?>

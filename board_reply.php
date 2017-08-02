@@ -17,6 +17,7 @@ $parent_content = "\n>" . str_replace("\n", "\n>", $parent_row['content']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시판 답변 달기</title>
     <link href="https://bootswatch.com/paper/bootstrap.min.css" rel="stylesheet" />
+    <link href="bootstrap-3.3.7\css\boostrapValidator.min.css" rel="stylesheet" />
     <link href="/css/board.css" rel="stylesheet">
 </head>
 <body id="target">
@@ -73,7 +74,7 @@ $parent_content = "\n>" . str_replace("\n", "\n>", $parent_row['content']);
         <h1>게시판 <small>답변글 쓰기</small></h1>
         <hr>
         <div class="well col-md-10 col-md-offset-1">
-        <form class="form-horizontal" action="board_process.php?cmd=insert_reply" method="post">
+        <form id="writeForm" class="form-horizontal" action="board_process.php?cmd=insert_reply" method="post">
             <input type="hidden" name="parent_depth" value="<?=$parent_row['depth']?>">
             <input type="hidden" name="parent_thread" value="<?=$parent_row['thread']?>">
             <div class="form-group">
@@ -127,5 +128,72 @@ $parent_content = "\n>" . str_replace("\n", "\n>", $parent_row['content']);
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="bootstrap-3.3.7/js/bootstrapValidator.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#writeForm').bootstrapValidator({
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    name: {
+                        validators: {
+                            stringLength: {
+                                min:2, max:20,
+                                message: '최소 2자 이상 20이하의 문자로 입력하세요.'
+                            },
+                            notEmpty: {
+                                message: '이름을 입력하세요.'
+                            }
+                        }
+                    },
+                    email: {
+                        validators: {
+                            notEmpty: {
+                                message: '이메일 주소를 입력하세요'
+                            },
+                            emailAddress: {
+                                message: '올바른 이메일 주소 형식으로 입력하세요.'
+                            }
+                        }
+                    },
+                    password: {
+                        validators: {
+                            stringLength: {
+                                min:4, max:15,
+                                message: '비밀번호는 4~15자의 숫자,알파벳 문자로 입력하세요.'
+                            },
+                            regexp: {
+                                regexp: /^[a-zA-Z0-9]+$/,
+                                message: '숫자,알파벳 문자 4~15자의 형식으로 입력하세요.'
+                            },
+                            notEmpty: {
+                                message: '비밀번호를 입력하세요(글 수정, 삭제시 반드시 필요).'
+                            }
+                        }
+                    },
+                    title: {
+                        validators: {
+                            stringLength: {
+                                max:100
+                            },
+                            notEmpty: {
+                                message: '글 제목을 입력하세요.'
+                            }
+                        }
+                    },
+                    content: {
+                        validators: {
+                            notEmpty: {
+                                message: '글 내용을 입력하세요.'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>

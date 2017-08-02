@@ -89,7 +89,7 @@ $row = mysqli_fetch_assoc($result);
                     </ul>
                 </div>
                 <div class="post-body">
-                    <?=nl2br(strip_tags($row['content']))?>
+                    <?=nl2br(str_replace(' ', '&nbsp;', strip_tags($row['content'])));?>
                 </div>
               </div>
             </div>

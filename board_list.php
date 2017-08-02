@@ -15,20 +15,19 @@ $st = explode(" ", microtime());
 // $sql = "SELECT * FROM $board ORDER BY thread LIMIT $no,$page_size";
 // 1. 글 목록의 첫번째 글 찾기
 $sql = "SELECT thread FROM $board ORDER BY thread LIMIT $no,1";
-$result = mysqli_query($conn, $sql);
+$result = mysqli_query($conn, $sql) or ErrorMessage('글 목록을 가져오는 도중에 오류가 발생하였습니다.', false);
 $row = mysqli_fetch_row($result);
 $start_thread = $row[0];
 //2. 찾은 thread 값으로 10개의 글을 가져옴
 $sql = "SELECT * FROM $board WHERE thread >= '$start_thread' ORDER BY thread LIMIT $page_size";
-
 //$sql = "SELECT * FROM $board WHERE thread >= (SELECT thread FROM $board ORDER BY thread LIMIT $no, 1) ORDER BY thread";
-$result = mysqli_query($conn, $sql);
+$result = mysqli_query($conn, $sql) or ErrorMessage('글 목록을 가져오는 도중에 오류가 발생하였습니다.', false);
 
 $et = explode(" ", microtime());
 echo ($et[1] - $st[1] + $et[0]-$st[0]);
 // 총 게시물 수를 구한다.
 $result_count = mysqli_query($conn, "SELECT count(*) FROM $board");
-$result_row = mysqli_fetch_row($result_count);
+$result_row = mysqli_fetch_row($result_count) or ErrorMessage('글 목록을 가져오는 도중에 오류가 발생하였습니다.', false);
 $total_row = $result_row[0]; // 첫 번째 열이 count(*) 의 결과다
 // 총 페이지 계산
 if($total_row <= 0) $total_row = 0; // 총 게시물의 값이 0 이나 비정상이라면 0으로 설정
@@ -115,7 +114,8 @@ $current_page = ceil(($no + 1) / $page_size);
 ?>
             <tr>
                 <td><?=$row['id']?></td>
-                <td><?php if($row['depth'] > 0) echo '<img src="/img/depth.gif" width="'.($row['depth'] * 7).'"/>└'; ?>
+                <td style="word-break:break-all;">
+                    <?php if($row['depth'] > 0) echo '<img src="/img/depth.gif" width="'.($row['depth'] * 7).'"/>└'; ?>
                     <a href="/board_read.php?id=<?=$row['id']?>&no=<?=$no?>"><?=strip_tags($row['title'])?></a>
                 </td>
                 <td><a href="mailto:<?=$row['email']?>"><?=$row['name']?></a></td>

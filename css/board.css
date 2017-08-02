@@ -52,3 +52,4 @@ body > .container {
     text-align: center;
     font-size: 1em;
 }
+#success_message{ display: none;}
