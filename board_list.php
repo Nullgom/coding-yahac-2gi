@@ -13,7 +13,7 @@ if(!$no || $no < 0) $no = 0;
 $sql = "SELECT * FROM $board ORDER BY thread DESC LIMIT $no,$page_size";
 $result = mysqli_query($conn, $sql);
 // 총 게시물 수를 구한다.
-$result_count = mysqli_query($conn, "SELECT count(*) FROM board");
+$result_count = mysqli_query($conn, "SELECT count(*) FROM $board");
 $result_row = mysqli_fetch_row($result_count);
 $total_row = $result_row[0]; // 첫 번째 열이 count(*) 의 결과다
 // 총 페이지 계산
@@ -124,7 +124,7 @@ if($total_page <  $end_page) $end_page = $total_page;
 if($start_page >= $page_list_size) {
     // 이전 페이지 리스트 값은 젓 번째 페이지에서 한 페이지 감소하면 된다.
     // $page_size를 곱해주는 이유는 글 번호로 표시하기 위해서이다.
-    $prev_list = ($start_page - 2) * page_size;
+    $prev_list = ($start_page - 2) * $page_size;
     echo '<li><a href="'.$_SERVER['PHP_SELF'].'?no='.$prev_list.'">&laquo;</a></li>'."\n";
 } else {
     echo '<li class="disabled"><a href="#">&laquo;</a></li>'."\n";
