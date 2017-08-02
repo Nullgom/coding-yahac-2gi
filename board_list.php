@@ -5,11 +5,12 @@ $conn = db_init($config['host'], $config['dbuser'], $config['dbpass'], $config['
 
 $page_size = 10;       // 한페이지에 보여질 게시물 수
 $page_list_size = 10; // 페이지 나누기에 표시될 페이지수
+// $no 값이 안 넘어 오거나 잘못된(음수) 값이 넘어오는 경우 0으로 처리
 $no = empty($_GET['no']) ? 0 : intval($_GET['no']);
 if(!$no || $no < 0) $no = 0;
 
 // 데이터베이스에서 페이지의 첫 번째  글($no)부터 $page_size만큼의 글을 가져 온다.
-$sql = "SELECT * FROM board ORDER BY id DESC LIMIT $no,$page_size";
+$sql = "SELECT * FROM $board ORDER BY thread DESC LIMIT $no,$page_size";
 $result = mysqli_query($conn, $sql);
 // 총 게시물 수를 구한다.
 $result_count = mysqli_query($conn, "SELECT count(*) FROM board");
@@ -32,7 +33,7 @@ $current_page = ceil(($no + 1) / $page_size);
     <link href="/css/board.css" rel="stylesheet">
 </head>
 <body id="target">
-    <header class="navbar navbar-inverse navbar-static-top">
+    <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2" aria-expanded="false">
@@ -100,9 +101,11 @@ $current_page = ceil(($no + 1) / $page_size);
 ?>
             <tr>
                 <td><?=$row['id']?></td>
-                <td><a href="/board_read.php?id=<?=$row['id']?>&no=<?=$no?>"><?=$row['title']?></a></td>
+                <td><?php if($row['depth'] > 0) echo '<img src="/img/depth.gif" width="'.($row['depth'] * 7).'"/>└'; ?>
+                    <a href="/board_read.php?id=<?=$row['id']?>&no=<?=$no?>"><?=strip_tags($row['title'])?></a>
+                </td>
                 <td><a href="mailto:<?=$row['email']?>"><?=$row['name']?></a></td>
-                <td><?=substr($row['created_at'], 0, 10)?></td>
+                <td><?=date("Y-m-d", $row['created_at'])?></td>
                 <td><?=$row['hits']?></td>
             </tr>
 <?php

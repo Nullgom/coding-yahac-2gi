@@ -3,6 +3,19 @@ html, body {
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px;
 }
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+
+    margin-bottom: 50px;
+}
+body > .container {
+    padding-top: 60px;
+    padding-bottom: 60px;
+    margin-bottom: -50px;
+}
 .post-info {
     overflow: hidden;
     border-bottom: 1px solid #ddd;
@@ -26,7 +39,7 @@ html, body {
     min-height: 300px;
 }
 .footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
     height: 50px;

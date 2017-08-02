@@ -3,8 +3,9 @@ require('config/config.php');
 require('lib/db.php');
 $conn = db_init($config['host'], $config['dbuser'], $config['dbpass'], $config['dbname']);
 $id = intval($_GET['id']);
+$no = empty($_GET['no']) ? 0 : intval($_GET['no']);
 // 먼저 쓴 글의 정보를 가져온다.
-$sql = "SELECT * FROM board WHERE id=$id";
+$sql = "SELECT * FROM $board WHERE id=$id";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
 ?>
@@ -14,12 +15,12 @@ $row = mysqli_fetch_assoc($result);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시판 목록 보기</title>
+    <title>게시판 글 내용 보기</title>
     <link href="https://bootswatch.com/paper/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/board.css" rel="stylesheet">
 </head>
 <body id="target">
-    <header class="navbar navbar-inverse navbar-static-top">
+    <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2" aria-expanded="false">
@@ -69,12 +70,12 @@ $row = mysqli_fetch_assoc($result);
           </div>
     </header>
     <div class="container">
-        <h1>게시판 <small>글 수정하기</small></h1>
+        <h1>게시판 <small>글 내용 보기</small></h1>
         <hr>
         <div class="view">
             <div class="panel panel-default">
               <div class="panel-heading">
-                <h4 class="post-title"><?=$row['title']?></h4>
+                <h4 class="post-title"><?=strip_tags($row['title'])?></h4>
               </div>
               <div class="panel-body">
                 <div class="post-info">
@@ -82,17 +83,20 @@ $row = mysqli_fetch_assoc($result);
                         <li><span class="glyphicon glyphicon-user"></span>&nbsp;
                             <a href="mailto:<?=$row['email']?>"><?=$row['name']?></a></li>
                         <li><span class="glyphicon glyphicon-calendar"></span>&nbsp;
-                            <?=$row['created_at']?></li>
+                            <?=date("Y-m-d", $row['created_at'])?></li>
                         <li><span class="glyphicon glyphicon-eye-open"></span>&nbsp;
                             <?=$row['hits']?></li>
                     </ul>
                 </div>
                 <div class="post-body">
-                    <?=nl2br($row['content'])?>
+                    <?=nl2br(strip_tags($row['content']))?>
                 </div>
               </div>
             </div>
             <div class="control text-right">
+                <a href="/board_reply.php?id=<?=$row['id']?>" class="btn btn-success">
+                    <span class="glyphicon glyphicon-pencil"></span>&nbsp; 답변 달기</a>
+                &nbsp;&nbsp;&nbsp;
                 <a href="/board_edit.php?id=<?=$row['id']?>" class="btn btn-primary">
                     <span class="glyphicon glyphicon-pencil"></span>&nbsp; 글 수정</a>
                 &nbsp;&nbsp;&nbsp;
@@ -106,7 +110,7 @@ $row = mysqli_fetch_assoc($result);
               <ul class="pager">
 <?php
     // 현재 글보다 id값이 큰 글 중 가작 작은 것을 가져온다. 즉 바로 이전 글
-    $query = mysqli_query($conn, "SELECT id FROM board WHERE id > $id LIMIT 1");
+    $query = mysqli_query($conn, "SELECT id FROM $board WHERE thread > {$row['thread']} and depth = 0 LIMIT 1");
     $prev_id = mysqli_fetch_assoc($query);
     if($prev_id['id']) { // 이전 글이 있는 경우
         echo '<li class="previous"><a href="/board_read.php?id='.$prev_id['id'].'">';
@@ -114,7 +118,7 @@ $row = mysqli_fetch_assoc($result);
     } else {
         echo '<li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> 이전 글</a></li>'."\n";
     }
-    $query = mysqli_query($conn, "SELECT id FROM board WHERE id < $id ORDER BY id DESC LIMIT 1");
+    $query = mysqli_query($conn, "SELECT id FROM $board WHERE thread < {$row['thread']} and depth = 0 ORDER BY thread DESC LIMIT 1");
     $next_id = mysqli_fetch_assoc($query);
     if($next_id['id']) {
         echo '<li class="next"><a href="/board_read.php?id='.$next_id['id'].'">';
@@ -125,6 +129,49 @@ $row = mysqli_fetch_assoc($result);
 ?>
               </ul>
             </nav>
+
+<?php
+    // 리스트를 출력을 위해 thread를 계산한다.
+    $thread_start = (ceil($row['thread'] / 1000) -1) * 1000;
+    $thread_end = $thread_start + 1000;
+    //echo $thread_start, $thread_end;
+    $sql = "SELECT * FROM $board WHERE thread <= $thread_end AND thread > $thread_start ORDER BY thread DESC";
+    $result = mysqli_query($conn, $sql);
+    //var_dump($result);
+    if($result->num_rows > 0) {
+?>
+            <table class="table table-striped">
+            <thead>
+                <tr class="info">
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>글쓴이</th>
+                    <th>작성일</th>
+                    <th>조회수</th>
+                </tr>
+            </thead>
+            <tbody>
+<?php
+        while($row = mysqli_fetch_assoc($result)) {
+?>
+                <tr>
+                    <td><?=$row['id']?></td>
+                    <td><?php if($row['depth'] > 0) echo '<img src="/img/depth.gif" width="'.($row['depth']*7).'" alt="gap">└'; ?>
+                        <a href="/board_read.php?id=<?=$row['id']?>&no=<?=$no?>"><?=strip_tags($row['title'])?></a>
+                    </td>
+                    <td><a href="mailto:<?=$row['email']?>"><?=$row['name']?></a></td>
+                    <td><?=date("Y-m-d", $row['created_at'])?></td>
+                    <td><?=$row['hits']?></td>
+                </tr>
+<?php
+        }
+?>
+            </tbody>
+            </table>
+<?php
+    }
+?>
+            </div>
         </div>
     </div>
     <footer class="footer">
@@ -171,6 +218,6 @@ $row = mysqli_fetch_assoc($result);
 </html>
 <?php
 // 조회수 업데이트
-$result = mysqli_query($conn, "UPDATE board SET hits=hits+1 WHERE id=$id");
+$result = mysqli_query($conn, "UPDATE $board SET hits=hits+1 WHERE id=$id");
 mysqli_close($conn);
 ?>

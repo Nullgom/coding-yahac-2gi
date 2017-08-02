@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시판 목록 보기</title>
+    <title>게시판 글 쓰기</title>
     <link href="https://bootswatch.com/paper/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/board.css" rel="stylesheet">
 </head>
 <body id="target">
-    <header class="navbar navbar-inverse navbar-static-top">
+    <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2" aria-expanded="false">

@@ -5,4 +5,5 @@ $config = array (
     'dbpass' => 'cipass',
     'dbname' => 'opentutorials'
 );
+$board = 'threadboard';
 ?>

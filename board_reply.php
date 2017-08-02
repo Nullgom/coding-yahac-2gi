@@ -3,10 +3,11 @@ require('config/config.php');
 require('lib/db.php');
 $conn = db_init($config['host'], $config['dbuser'], $config['dbpass'], $config['dbname']);
 $id = intval($_GET['id']);
-// 먼저 쓴 글의 정보를 가져온다.
 $sql = "SELECT * FROM $board WHERE id=$id";
-$result = mysqli_query($conn, $sql);
-$row = mysqli_fetch_assoc($result);
+$parent_result = mysqli_query($conn, $sql);
+$parent_row = mysqli_fetch_assoc($parent_result);
+$parent_title = 'RE:'.$parent_row['title'];
+$parent_content = "\n>" . str_replace("\n", "\n>", $parent_row['content']);
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -14,7 +15,7 @@ $row = mysqli_fetch_assoc($result);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시판 글 수정하기</title>
+    <title>게시판 답변 달기</title>
     <link href="https://bootswatch.com/paper/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/board.css" rel="stylesheet">
 </head>
@@ -35,7 +36,7 @@ $row = mysqli_fetch_assoc($result);
 
             <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-2" aria-expanded="false" style="height: 1px;">
               <ul class="nav navbar-nav">
-                <li class="active"><a href="/board_list">게시판 <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="/board_list.php">게시판 <span class="sr-only">(current)</span></a></li>
                 <li><a href="#">토픽</a></li>
                 <li><a href="#">방명록</a></li>
                 <li class="dropdown">
@@ -69,48 +70,49 @@ $row = mysqli_fetch_assoc($result);
           </div>
     </header>
     <div class="container">
-        <h1>게시판 <small>글 수정하기</small></h1>
+        <h1>게시판 <small>답변글 쓰기</small></h1>
         <hr>
         <div class="well col-md-10 col-md-offset-1">
-        <form class="form-horizontal" action="board_process.php?cmd=update" method="post">
-            <input type="hidden" name="id" value="<?=$id?>">
+        <form class="form-horizontal" action="board_process.php?cmd=insert_reply" method="post">
+            <input type="hidden" name="parent_depth" value="<?=$parent_row['depth']?>">
+            <input type="hidden" name="parent_thread" value="<?=$parent_row['thread']?>">
             <div class="form-group">
               <label for="inputName" class="col-lg-2 control-label">이름 :</label>
               <div class="col-lg-10">
-                <input type="text" class="form-control" name="name" id="inputName" value="<?=$row['name']?>" placeholder="작성자 이름 입력">
+                <input type="text" class="form-control" name="name" id="inputName" placeholder="작성자 이름 입력">
               </div>
             </div>
             <div class="form-group">
               <label for="inputEmail" class="col-lg-2 control-label">이메일 :</label>
               <div class="col-lg-10">
-                <input type="email" class="form-control" name="email" id="inputEmail" value="<?=$row['email']?>" placeholder="Email 입력">
+                <input type="email" class="form-control" name="email" id="inputEmail" placeholder="Email 입력">
               </div>
             </div>
             <div class="form-group">
               <label for="inputPassword" class="col-lg-2 control-label">비밀번호 :</label>
               <div class="col-lg-10">
-                <input type="password" class="form-control" name="password" id="inputPassword" placeholder="비밀번호 입력(비밀번호가 맞아야 수정가능)" required/>
+                <input type="password" class="form-control" name="password" id="inputPassword" placeholder="비밀번호 입력(수정,삭제 시 반드시 필요)"/>
               </div>
             </div>
             <div class="form-group">
               <label for="inputTitle" class="col-lg-2 control-label">제목 :</label>
               <div class="col-lg-10">
-                <input type="text" class="form-control" name="title" id="inputTitle" value="<?=$row['title']?>" placeholder="글 제목을 입력" required />
+                <input type="text" class="form-control" name="title" id="inputTitle" placeholder="글 제목을 입력" required value="<?=$parent_title?>" />
               </div>
             </div>
             <div class="form-group">
               <label for="textArea" class="col-lg-2 control-label">본문 :</label>
               <div class="col-lg-10">
-                <textarea class="form-control" rows="10" name="content" id="textArea" required placeholder="글 내용을 입력..."><?=$row['content']?></textarea>
+                <textarea class="form-control" rows="10" name="content" id="textArea" required placeholder="글 내용을 입력..."><?=$parent_content?></textarea>
                 <!-- <span class="help-block">A longer block of help text that breaks onto a new line and may extend beyond one line.</span> -->
               </div>
             </div>
             <div class="form-group">
               <div class="col-lg-10 col-lg-offset-2 text-right">
-                <button type="submit" class="btn btn-success">글 저장하기&nbsp;
-                  <span class="glyphicon glyphicon-send"></span></button>
-                &nbsp;&nbsp;&nbsp;
                 <button type="reset" class="btn btn-default">다시 쓰기</button>
+                &nbsp;&nbsp;&nbsp;
+                <button type="submit" class="btn btn-primary">글 저장하기&nbsp;
+                    <span class="glyphicon glyphicon-send"></span></button>
                 &nbsp;&nbsp;&nbsp;
                 <button class="btn btn-warning" onclick="history.back(-1)">되돌아가기</button>
               </div>
