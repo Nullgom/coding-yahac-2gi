@@ -9,9 +9,23 @@ $page_list_size = 10; // 페이지 나누기에 표시될 페이지수
 $no = empty($_GET['no']) ? 0 : intval($_GET['no']);
 if(!$no || $no < 0) $no = 0;
 
+
+$st = explode(" ", microtime());
 // 데이터베이스에서 페이지의 첫 번째  글($no)부터 $page_size만큼의 글을 가져 온다.
-$sql = "SELECT * FROM $board ORDER BY thread DESC LIMIT $no,$page_size";
+// $sql = "SELECT * FROM $board ORDER BY thread LIMIT $no,$page_size";
+// 1. 글 목록의 첫번째 글 찾기
+$sql = "SELECT thread FROM $board ORDER BY thread LIMIT $no,1";
 $result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_row($result);
+$start_thread = $row[0];
+//2. 찾은 thread 값으로 10개의 글을 가져옴
+$sql = "SELECT * FROM $board WHERE thread >= '$start_thread' ORDER BY thread LIMIT $page_size";
+
+//$sql = "SELECT * FROM $board WHERE thread >= (SELECT thread FROM $board ORDER BY thread LIMIT $no, 1) ORDER BY thread";
+$result = mysqli_query($conn, $sql);
+
+$et = explode(" ", microtime());
+echo ($et[1] - $st[1] + $et[0]-$st[0]);
 // 총 게시물 수를 구한다.
 $result_count = mysqli_query($conn, "SELECT count(*) FROM $board");
 $result_row = mysqli_fetch_row($result_count);

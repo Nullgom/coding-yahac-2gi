@@ -17,12 +17,12 @@ if(!empty($_GET['cmd'])) {
                 $content  = sanitize($_POST['content']);
                 //var_dump($_POST);
                 // 현재 글 중에서 가장 큰 값을 가져온다.
-                $max_thread_result = mysqli_query($conn, "SELECT max(thread) FROM $board");
-                $max_thread_fetch = mysqli_fetch_row($max_thread_result);
+                $min_thread_result = mysqli_query($conn, "SELECT min(thread) FROM $board");
+                $min_thread_fetch = mysqli_fetch_row($min_thread_result);
                 // 새 글의 thread 값을 계산한다.
-                $max_thread = ceil($max_thread_fetch[0] / 1000) * 1000 + 1000;
+                $min_thread = floor($min_thread_fetch[0] / 1000) * 1000 - 1000;
                 $sql  = "INSERT INTO $board (`thread`,`depth`,`name`,`email`,`password`,`title`,`content`,`created_at`,`ip`,`hits`) ";
-                $sql .= "VALUES ($max_thread, 0, '$name', '$email', '$password', '$title', '$content', UNIX_TIMESTAMP(), '$REMOTE_ADDR', 0)";
+                $sql .= "VALUES ($min_thread, 0, '$name', '$email', '$password', '$title', '$content', UNIX_TIMESTAMP(), '$REMOTE_ADDR', 0)";
                 //echo $sql;
                 if(mysqli_query($conn, $sql) === TRUE) {
                     $inserted_id = mysqli_insert_id($conn);
@@ -93,11 +93,13 @@ if(!empty($_GET['cmd'])) {
                 $content  = sanitize($_POST['content']);
                 $parent_thread = intval($_POST['parent_thread']);
                 $parent_depth = intval($_POST['parent_depth']);
-                $prev_parent_thread = ceil($_POST['parent_thread'] / 1000) * 1000 - 1000;
-                $sql = "UPDATE $board SET thread=thread-1 WHERE thread > $prev_parent_thread and thread < $parent_thread";
+
+                $prev_parent_thread = floor($_POST['parent_thread'] / 1000) * 1000 + 1000;
+                $sql = "UPDATE $board SET thread=thread+1 WHERE thread < $prev_parent_thread and thread > $parent_thread";
+                $sql .= " ORDER BY thread DESC";
                 $update_thread = mysqli_query($conn, $sql);
                 $sql = "INSERT INTO $board (thread, depth, name, password, email, title, content, created_at,ip, hits) ";
-                $sql .= "VALUES (".($parent_thread-1).", ".($parent_depth + 1).", '$name', '$password', '$email','$title','$content', UNIX_TIMESTAMP(), '$REMOTE_ADDR', 0)";
+                $sql .= "VALUES (".($parent_thread + 1).", ".($parent_depth + 1).", '$name', '$password', '$email','$title','$content', UNIX_TIMESTAMP(), '$REMOTE_ADDR', 0)";
                 if($result = mysqli_query($conn, $sql)) {
                     alert_to_location('정상적으로 저장되었습니다.', '/board_list.php');
                 } else {

@@ -110,7 +110,7 @@ $row = mysqli_fetch_assoc($result);
               <ul class="pager">
 <?php
     // 현재 글보다 id값이 큰 글 중 가작 작은 것을 가져온다. 즉 바로 이전 글
-    $query = mysqli_query($conn, "SELECT id FROM $board WHERE thread > {$row['thread']} and depth = 0 LIMIT 1");
+    $query = mysqli_query($conn, "SELECT id FROM $board WHERE thread < {$row['thread']} and depth = 0 ORDER BY thread DESC LIMIT 1");
     $prev_id = mysqli_fetch_assoc($query);
     if($prev_id['id']) { // 이전 글이 있는 경우
         echo '<li class="previous"><a href="/board_read.php?id='.$prev_id['id'].'">';
@@ -118,7 +118,7 @@ $row = mysqli_fetch_assoc($result);
     } else {
         echo '<li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> 이전 글</a></li>'."\n";
     }
-    $query = mysqli_query($conn, "SELECT id FROM $board WHERE thread < {$row['thread']} and depth = 0 ORDER BY thread DESC LIMIT 1");
+    $query = mysqli_query($conn, "SELECT id FROM $board WHERE thread > {$row['thread']} and depth = 0 ORDER BY thread LIMIT 1");
     $next_id = mysqli_fetch_assoc($query);
     if($next_id['id']) {
         echo '<li class="next"><a href="/board_read.php?id='.$next_id['id'].'">';
@@ -132,10 +132,10 @@ $row = mysqli_fetch_assoc($result);
 
 <?php
     // 리스트를 출력을 위해 thread를 계산한다.
-    $thread_start = (ceil($row['thread'] / 1000) -1) * 1000;
-    $thread_end = $thread_start + 1000;
+    $thread_start = floor($row['thread'] / 1000) * 1000 + 1000;
+    $thread_end = floor($row['thread']/ 1000) * 1000;
     //echo $thread_start, $thread_end;
-    $sql = "SELECT * FROM $board WHERE thread <= $thread_end AND thread > $thread_start ORDER BY thread DESC";
+    $sql = "SELECT * FROM $board WHERE thread >= $thread_end AND thread < $thread_start ORDER BY thread";
     $result = mysqli_query($conn, $sql);
     //var_dump($result);
     if($result->num_rows > 0) {
